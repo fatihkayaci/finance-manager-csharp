@@ -1,4 +1,15 @@
 services:
+  finance_ui:
+    build:
+      context: ./ui/finance-client  # Dockerfile nerede?
+      dockerfile: Dockerfile
+    ports:
+      - "3000:5173"  # Tarayıcıda 3000 yazacağız, kutunun 5173'üne gidecek
+    volumes:
+      - ./ui/finance-client:/app  # CANLI YAYIN TÜNELİ (Hot Reload)
+      - /app/node_modules         # (Burası teknik detay: node_modules karışmasın diye)
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Windows dosya izleme modu
   finance_api:
     build:
       context: ./api

@@ -2,57 +2,73 @@ using FinanceApp.DataAccess;
 using FinanceApp.Service.Interfaces;
 using FinanceApp.Service.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
+// Postgres tarih ayarı
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. SERVİSLERİ EKLEME
+// --- 1. CORS AYARI (NÜKLEER MOD) ---
+builder.Services.AddCors(options =>
+{
+    // İsim vermiyoruz, varsayılan politika yapıyoruz.
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()  // KİM OLURSAN OL GEL (localhost, ip, vs.)
+              .AllowAnyHeader()  // Her türlü başlığı kabul et
+              .AllowAnyMethod(); // GET, POST, PUT, DELETE hepsine izin ver
+    });
+});
 
 // Veritabanı Bağlantısı
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<FinanceDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Bizim Servisler (Dependency Injection)
+// Servisler
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 
-// Controllerlar
-builder.Services.AddControllers();
+// Controllerlar ve JSON Döngü Engelleyici
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
-// Swagger (API Dokümantasyonu) Servisleri
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// 2. UYGULAMA AYARLARI (Middleware)
+// --- 2. MIDDLEWARE SIRALAMASI (ÇOK ÖNEMLİ) ---
 
-// --- KRİTİK DEĞİŞİKLİK BURADA ---
-// "if (Development)" kontrolünü kaldırdık. Swagger hep açık olsun.
+// CORS EN BAŞTA OLMALI!
+app.UseCors(); 
+
+// Swagger her zaman açık olsun
 app.UseSwagger();
 app.UseSwaggerUI();
-// --------------------------------
 
-// HTTPS yönlendirmesini kapattık (Docker'da bazen 404 yapar)
-// app.UseHttpsRedirection(); 
+// app.UseHttpsRedirection(); // Docker için kapalı kalsın
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-// Veritabanını otomatik oluştur (Migration)
+// Veritabanı Otomatik Oluşturma (Migration)
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<FinanceDbContext>();
-    // Hata almamak için try-catch bloğuna aldık
     try 
     {
         context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Veritabani olusturulurken hata: {ex.Message}");
+        Console.WriteLine($"Veritabani hatasi: {ex.Message}");
     }
 }
 
