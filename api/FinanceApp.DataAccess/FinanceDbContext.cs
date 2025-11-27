@@ -19,7 +19,7 @@ namespace FinanceApp.DataAccess
         
         // C# tarafındaki "Transaction" class'ı, veritabanında "Transactions" tablosuna denk gelsin.
         public DbSet<Transaction> Transactions { get; set; }
-
+        public DbSet<User> Users { get; set; }
 
         // Tablolar oluşurken ekstra kurallar belirlemek istersek burayı kullanırız.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -31,7 +31,8 @@ namespace FinanceApp.Service.Services
                     Description = t.Description,
                     TransactionDate = t.TransactionDate,
                     CategoryId = t.CategoryId,
-                    CategoryName = t.Category.Name // Kategori adını buradan alıp DTO'ya koyuyoruz
+                    CategoryName = t.Category.Name,
+                    CategoryType = t.Category.Type
                 });
             }
 

@@ -3,7 +3,9 @@ using FinanceApp.Service.Interfaces;
 using FinanceApp.Service.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 // Postgres tarih ayarı
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -26,10 +28,33 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<FinanceDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// --- JWT DOĞRULAMA AYARLARI ---
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true, // Süresi dolmuş mu bak
+        ValidateIssuerSigningKey = true, // İmza doğru mu bak
+        
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(secretKey)
+    };
+});
 // Servisler
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-
+builder.Services.AddScoped<IAuthService, AuthService>();
 // Controllerlar ve JSON Döngü Engelleyici
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -48,6 +73,8 @@ var app = builder.Build();
 // CORS EN BAŞTA OLMALI!
 app.UseCors(); 
 
+app.UseAuthentication(); // <-- ÖNCE KİMLİK KONTROLÜ (Kimsin?)
+app.UseAuthorization();  // <-- SONRA YETKİ KONTROLÜ (Girebilir misin?)
 // Swagger her zaman açık olsun
 app.UseSwagger();
 app.UseSwaggerUI();

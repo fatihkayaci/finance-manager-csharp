@@ -1,18 +1,16 @@
 import { useState } from "react";
 
-// Bu bileşen dışarıdan "categories" listesini ve işlem bitince çalışacak "onSuccess" fonksiyonunu alıyor.
 function TransactionForm({ categories, onSuccess }) {
   const [formData, setFormData] = useState({
     amount: "",
     description: "",
     categoryId: "",
-    transactionDate: new Date().toISOString().split('T')[0] // Bugünü varsayılan yap
+    transactionDate: new Date().toISOString().split('T')[0]
   });
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Sayfanın yenilenmesini engelle
+    e.preventDefault();
 
-    // Backend'e gönderilecek veri (CreateTransactionDto formatında)
     const payload = {
       amount: Number(formData.amount),
       description: formData.description,
@@ -27,22 +25,21 @@ function TransactionForm({ categories, onSuccess }) {
       },
       body: JSON.stringify(payload)
     })
-    .then(res => {
+      .then(res => {
         if (res.ok) {
-            alert("İşlem Eklendi! 💸");
-            setFormData({ ...formData, amount: "", description: "" }); // Formu temizle
-            onSuccess(); // Ana sayfaya "Haberin olsun yeni veri geldi" de
+          alert("İşlem Başarıyla Eklendi! 💸"); // Türkçe Mesaj
+          setFormData({ ...formData, amount: "", description: "" });
+          onSuccess();
         } else {
-            alert("Hata oluştu!");
+          alert("Bir hata oluştu!");
         }
-    }); 
+      });
   };
 
   return (
     <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
       <h3 className="text-lg font-medium text-blue-800 mb-3">Yeni İşlem Ekle</h3>
       
-      {/* Grid yapısı: Mobilde tek sütun, bilgisayarda 2 sütun (grid-cols-2) */}
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <input 

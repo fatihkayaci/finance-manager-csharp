@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import TransactionForm from './components/TransactionForm'
+import Dashboard from './components/Dashboard'
 
 function App() {
   const [transactions, setTransactions] = useState([]) // İşlemler listesi
@@ -25,15 +26,16 @@ function App() {
   }, [])
 
   return (
-    // min-h-screen: Ekranı tam kapla, bg-gray-100: Açık gri arka plan
     <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
-      
-      <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-xl">
+      <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
+        
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
           💰 Gelir-Gider Takip
         </h1>
 
-        {/* Form Bileşeni */}
+        {/* Dashboard Component */}
+        <Dashboard transactions={transactions} />
+
         <div className="mb-8">
           <TransactionForm 
             categories={categories} 
@@ -43,12 +45,11 @@ function App() {
 
         <hr className="my-6 border-gray-200" />
 
-        {/* Liste Başlığı */}
         <h3 className="text-xl font-semibold text-gray-700 mb-4">
           Son İşlemler
         </h3>
 
-        {/* Liste Alanı */}
+        {/* List Items */}
         <ul className="space-y-3">
           {transactions.map(t => (
             <li 

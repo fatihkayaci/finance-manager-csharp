@@ -11,7 +11,8 @@
 - **Categorization:** Organize transactions with custom categories.
 - **Reporting:** (Coming Soon) Visual dashboard for monthly/yearly insights.
 - **Containerized:** Fully dockerized environment for easy setup.
-
+- **Secure Authentication:** JWT (JSON Web Token) based login & registration system.
+  
 ## 🏗️ Architecture & Tech Stack
 
 This project follows the **N-Layer Architecture (Clean Architecture)** to ensure scalability and maintainability.
@@ -24,7 +25,8 @@ This project follows the **N-Layer Architecture (Clean Architecture)** to ensure
 - **Validation:** FluentValidation (Planned)
 - **Documentation:** Swagger / OpenAPI
 - **Pattern:** Repository Pattern & DTOs
-
+- **Security:** BCrypt (Password Hashing) & JWT Bearer Authentication
+  
 ### Frontend (UI)
 
 *[In Progress]*

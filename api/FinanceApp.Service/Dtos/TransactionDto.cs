@@ -10,5 +10,6 @@ namespace FinanceApp.Service.DTOs
         // Frontend'in işini kolaylaştıralım:
         public int CategoryId { get; set; }
         public required string CategoryName { get; set; } // Kategori adını da içine gömelim!
+        public required string CategoryType { get; set; }
     }
 }
