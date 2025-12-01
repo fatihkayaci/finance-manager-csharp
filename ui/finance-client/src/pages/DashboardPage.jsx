@@ -1,0 +1,99 @@
+import { useState, useEffect } from 'react'
+import TransactionForm from '../components/TransactionForm'
+import Dashboard from '../components/Dashboard'
+import { useNavigate } from 'react-router-dom'
+function DashboardPage() {
+  const [transactions, setTransactions] = useState([]) // İşlemler listesi
+  const [categories, setCategories] = useState([])     // Kategori listesi (Dropdown için)
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    // 1. Bileti Yırt (Token'ı sil)
+    localStorage.removeItem("token");
+    
+    // 2. Kapı Dışarı Et
+    navigate("/login");
+  }
+  // 1. Verileri Çeken Fonksiyonlar
+  const fetchTransactions = () => {
+    fetch('http://localhost:5055/api/transactions')
+      .then(res => res.json())
+      .then(data => setTransactions(data));
+  }
+  
+  const fetchCategories = () => {
+    fetch('http://localhost:5055/api/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data));
+  }
+
+  // 2. Sayfa ilk açıldığında çalışacak kod
+  useEffect(() => {
+    fetchCategories();
+    fetchTransactions();
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center py-10">
+      <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-xl">
+        
+        <nav className="w-full bg-white shadow-md p-4 flex justify-between items-center mb-6">
+          <h1 className="text-xl font-bold text-blue-600">
+            💰 Finance Manager
+          </h1>
+          <button 
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+          >
+            Çıkış Yap 🚪
+          </button>
+        </nav>
+        
+        {/* Dashboard Component */}
+        <Dashboard transactions={transactions} />
+
+        <div className="mb-8">
+          <TransactionForm 
+            categories={categories} 
+            onSuccess={fetchTransactions} 
+          />
+        </div>
+
+        <hr className="my-6 border-gray-200" />
+
+        <h3 className="text-xl font-semibold text-gray-700 mb-4">
+          Son İşlemler
+        </h3>
+
+        {/* List Items */}
+        <ul className="space-y-3">
+          {transactions.map(t => (
+            <li 
+              key={t.id} 
+              className="flex justify-between items-center p-4 bg-gray-50 rounded border border-gray-200 hover:shadow-md transition-shadow"
+            >
+              <div>
+                <span className="font-bold text-gray-800 text-lg block">
+                  {t.amount} TL
+                </span>
+                <span className="text-sm text-gray-500">
+                  {t.description || "Açıklama yok"}
+                </span>
+              </div>
+              
+              <span className="px-3 py-1 text-sm font-medium text-blue-600 bg-blue-100 rounded-full">
+                {t.categoryName}
+              </span>
+            </li>
+          ))}
+        </ul>
+        
+        {transactions.length === 0 && (
+          <p className="text-center text-gray-400 mt-4">Henüz işlem yok.</p>
+        )}
+      </div>
+
+    </div>
+  )
+}
+
+export default DashboardPage
