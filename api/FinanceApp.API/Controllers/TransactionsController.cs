@@ -2,11 +2,12 @@ using FinanceApp.Core;
 using FinanceApp.Service.Interfaces; // Interface nerede?
 using Microsoft.AspNetCore.Mvc;
 using FinanceApp.Service.DTOs;
-
+using Microsoft.AspNetCore.Authorization;
 namespace FinanceApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TransactionsController : ControllerBase
     {
         private readonly ITransactionService _transactionService;

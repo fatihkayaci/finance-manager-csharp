@@ -2,10 +2,12 @@ using FinanceApp.Core;
 using FinanceApp.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using FinanceApp.Service.DTOs;
+using Microsoft.AspNetCore.Authorization;
 namespace FinanceApp.API.Controllers
 {
     [Route("api/[controller]")] // Adresimiz: "api/categories" olacak
     [ApiController]             // Bu class bir API Controller'dır diyoruz
+    [Authorize]
     public class CategoriesController : ControllerBase
     {
         // 1. BAĞLANTI (Dependency Injection)

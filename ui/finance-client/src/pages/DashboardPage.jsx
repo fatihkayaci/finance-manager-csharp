@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import TransactionForm from '../components/TransactionForm'
 import Dashboard from '../components/Dashboard'
-import { useNavigate } from 'react-router-dom'
+import { data, useNavigate } from 'react-router-dom'
 function DashboardPage() {
   const [transactions, setTransactions] = useState([]) // İşlemler listesi
   const [categories, setCategories] = useState([])     // Kategori listesi (Dropdown için)
@@ -15,14 +15,39 @@ function DashboardPage() {
   }
   // 1. Verileri Çeken Fonksiyonlar
   const fetchTransactions = () => {
-    fetch('http://localhost:5055/api/transactions')
-      .then(res => res.json())
+    const token = localStorage.getItem("token");
+    fetch('http://localhost:5055/api/transactions',{
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // "Bearer " boşluğuna dikkat!
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (res.status === 401) {
+           // (Burayı sonra konuşuruz, şimdilik veriyi çekmeye odaklanalım)
+        }
+        return res.json();
+      })
       .then(data => setTransactions(data));
   }
   
   const fetchCategories = () => {
-    fetch('http://localhost:5055/api/categories')
-      .then(res => res.json())
+    const token = localStorage.getItem("token");
+    fetch('http://localhost:5055/api/categories',
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, // "Bearer " boşluğuna dikkat!
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => {
+        // Eğer 401 gelirse (Token süresi bitmiş olabilir), kullanıcıyı atabiliriz
+        if (res.status === 401) {
+        }
+        return res.json();
+      })
       .then(data => setCategories(data));
   }
 

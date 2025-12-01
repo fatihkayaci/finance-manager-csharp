@@ -18,14 +18,19 @@ function TransactionForm({ categories, onSuccess }) {
       transactionDate: formData.transactionDate
     };
 
+    const token = localStorage.getItem("token");
     fetch("http://localhost:5055/api/transactions", {
       method: "POST",
       headers: {
+        'Authorization': `Bearer ${token}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(payload)
     })
       .then(res => {
+        if (res.status === 401) {
+           // (Burayı sonra konuşuruz, şimdilik veriyi çekmeye odaklanalım)
+        }
         if (res.ok) {
           alert("İşlem Başarıyla Eklendi! 💸"); // Türkçe Mesaj
           setFormData({ ...formData, amount: "", description: "" });

@@ -2,7 +2,7 @@
 
 > A modern, full-stack personal finance management application built with **.NET 9**, **React**, and **Docker**. Designed with **Clean Architecture** principles.
 
-![Work In Progress](https://img.shields.io/badge/Status-Work_In_Progress-yellow)
+![Released](https://img.shields.io/badge/Status-v0.1_MVP_Released-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
 ## 🚀 Features
