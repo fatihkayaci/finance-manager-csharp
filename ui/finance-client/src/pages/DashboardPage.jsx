@@ -3,6 +3,7 @@ import TransactionForm from '../components/TransactionForm'
 import Dashboard from '../components/Dashboard'
 import { data, useNavigate } from 'react-router-dom'
 import SummaryChart from '../components/SummaryChart';
+const apiUrl = import.meta.env.VITE_API_URL;
 function DashboardPage() {
   const [transactions, setTransactions] = useState([]) // İşlemler listesi
   const [categories, setCategories] = useState([])     // Kategori listesi (Dropdown için)
@@ -20,7 +21,7 @@ function DashboardPage() {
     const token = localStorage.getItem("token");
 
     try {
-      const response = await fetch(`http://localhost:5055/api/transactions/${id}`, {
+      const response = await fetch(`${apiUrl}/api/transactions/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -39,7 +40,7 @@ function DashboardPage() {
   // 1. Verileri Çeken Fonksiyonlar
   const fetchTransactions = () => {
     const token = localStorage.getItem("token");
-    fetch('http://localhost:5055/api/transactions',{
+    fetch(`${apiUrl}/api/transactions`,{
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`, // "Bearer " boşluğuna dikkat!
@@ -57,7 +58,7 @@ function DashboardPage() {
   
   const fetchCategories = () => {
     const token = localStorage.getItem("token");
-    fetch('http://localhost:5055/api/categories',
+    fetch(`${apiUrl}/api/categories`,
       {
         method: 'GET',
         headers: {

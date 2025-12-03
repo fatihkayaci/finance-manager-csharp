@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+const apiUrl = import.meta.env.VITE_API_URL;
 function TransactionForm({ categories, onSuccess }) {
   const [formData, setFormData] = useState({
     amount: "",
@@ -19,7 +19,7 @@ function TransactionForm({ categories, onSuccess }) {
     };
 
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5055/api/transactions", {
+    fetch(`${apiUrl}/api/transactions`, {
       method: "POST",
       headers: {
         'Authorization': `Bearer ${token}`,
