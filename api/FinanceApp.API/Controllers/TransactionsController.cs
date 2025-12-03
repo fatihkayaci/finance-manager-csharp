@@ -35,5 +35,19 @@ namespace FinanceApp.API.Controllers
             await _transactionService.AddTransactionAsync(transaction);
             return Ok(new { message = "İşlem başarıyla kaydedildi." });
         }
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try 
+            {
+                await _transactionService.DeleteTransactionAsync(id);
+                return Ok(new { message = "Silindi" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

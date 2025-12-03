@@ -9,5 +9,6 @@ namespace FinanceApp.Service.Interfaces // Klasör yapına uygun Namespace
 
         // Yeni işlem ekle (Para girişi/çıkışı)
         Task AddTransactionAsync(CreateTransactionDto newTransaction);
+        Task DeleteTransactionAsync(int id);
     }
 }

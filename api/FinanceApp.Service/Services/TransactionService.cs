@@ -75,5 +75,25 @@ namespace FinanceApp.Service.Services
             await _context.Transactions.AddAsync(transactionEntity);
             await _context.SaveChangesAsync();
         }
+        public async Task DeleteTransactionAsync(int id)
+        {
+            var currentUserId = GetCurrentUserId(); // Kim siliyor?
+
+            // Hem ID'si tutan hem de Sahibi (UserId) tutan kaydı bul
+            var transaction = await _context.Transactions
+                                            .FirstOrDefaultAsync(t => t.Id == id && t.UserId == currentUserId);
+
+            if (transaction != null)
+            {
+                _context.Transactions.Remove(transaction);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                // Kayıt yoksa veya başkasınınsa hata fırlatabiliriz veya sessiz kalabiliriz.
+                throw new Exception("İşlem bulunamadı veya silme yetkiniz yok.");
+            }
+        }
     }
+    
 }

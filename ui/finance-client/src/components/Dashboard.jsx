@@ -1,11 +1,11 @@
 function Dashboard({ transactions }) {
   // Logic is in English (Değişkenler İngilizce)
   const income = transactions
-    .filter(t => t.categoryType === "Gelir") 
+    .filter(t => t.categoryType === "Income") 
     .reduce((acc, curr) => acc + curr.amount, 0);
 
   const expense = transactions
-    .filter(t => t.categoryType === "Gider")
+    .filter(t => t.categoryType === "Expense")
     .reduce((acc, curr) => acc + curr.amount, 0);
 
   const balance = income - expense;
