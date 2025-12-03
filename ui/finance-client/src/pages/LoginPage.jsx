@@ -28,11 +28,11 @@ function LoginPage() {
         if (response.ok) {
             console.log("Giriş Başarılı! Token:", data.token);
             
-            // Token'ı cebe at (LocalStorage)
+            // Token (LocalStorage)
             localStorage.setItem("token", data.token);
             
             alert("Hoşgeldiniz!");
-            navigate("/"); // Ana sayfaya fırlat
+            navigate("/");
         } else {
             console.log("Hata:", data);
             alert("Giriş Başarısız: " + data.message);

@@ -2,8 +2,7 @@ import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recha
 
 function SummaryChart({ transactions }) {
   
-  // 1. VERİYİ HAZIRLAMA (Gruplama Mantığı)
-  // Sadece "Gider" olanları alıp kategorilerine göre topluyoruz.
+  // 1. VERİYİ HAZIRLAMA
   const data = transactions
     .filter(t => t.categoryType === "Expense")
     .reduce((acc, curr) => {

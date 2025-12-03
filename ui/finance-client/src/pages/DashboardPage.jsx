@@ -6,13 +6,11 @@ import SummaryChart from '../components/SummaryChart';
 const apiUrl = import.meta.env.VITE_API_URL;
 function DashboardPage() {
   const [transactions, setTransactions] = useState([]) // İşlemler listesi
-  const [categories, setCategories] = useState([])     // Kategori listesi (Dropdown için)
+  const [categories, setCategories] = useState([])     // Kategori listesi
   const navigate = useNavigate();
   const handleLogout = () => {
-    // 1. Bileti Yırt (Token'ı sil)
+    // Token'ı sil)
     localStorage.removeItem("token");
-    
-    // 2. Kapı Dışarı Et
     navigate("/login");
   }
   const handleDelete = async (id) => {
@@ -37,19 +35,19 @@ function DashboardPage() {
       console.error("Silme hatası:", error);
     }
   }
-  // 1. Verileri Çeken Fonksiyonlar
+  // Verileri Çeken Fonksiyonlar
   const fetchTransactions = () => {
     const token = localStorage.getItem("token");
     fetch(`${apiUrl}/api/transactions`,{
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${token}`, // "Bearer " boşluğuna dikkat!
+        'Authorization': `Bearer ${token}`, 
         'Content-Type': 'application/json'
       }
     })
       .then(res => {
         if (res.status === 401) {
-           // (Burayı sonra konuşuruz, şimdilik veriyi çekmeye odaklanalım)
+           // (Burası sonra eğer token olmaz ise girecek kod)
         }
         return res.json();
       })
@@ -62,20 +60,20 @@ function DashboardPage() {
       {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`, // "Bearer " boşluğuna dikkat!
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
       .then(res => {
-        // Eğer 401 gelirse (Token süresi bitmiş olabilir), kullanıcıyı atabiliriz
         if (res.status === 401) {
+           // (Burası sonra eğer token olmaz ise girecek kod)
         }
         return res.json();
       })
       .then(data => setCategories(data));
   }
 
-  // 2. Sayfa ilk açıldığında çalışacak kod
+  // Sayfa ilk açıldığında çalışacak kod
   useEffect(() => {
     fetchCategories();
     fetchTransactions();
@@ -100,10 +98,7 @@ function DashboardPage() {
         {/* Dashboard Component */}
         <Dashboard transactions={transactions} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-           {/* Sol Taraf: Grafik */}
            <SummaryChart transactions={transactions} />
-           
-           {/* Sağ Taraf: Ekleme Formu (Mevcut formu buraya taşıdık ki yan yana dursunlar) */}
            <TransactionForm 
               categories={categories} 
               onSuccess={fetchTransactions} 
@@ -139,7 +134,6 @@ function DashboardPage() {
                   className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-full transition-colors"
                   title="Sil"
               >
-                  {/* Çöp Kutusu İkonu (SVG) */}
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                   </svg>

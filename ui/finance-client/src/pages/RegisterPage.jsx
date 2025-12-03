@@ -2,15 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const apiUrl = import.meta.env.VITE_API_URL;
 function RegisterPage() {
-
-  // ----------------------------------------------------
-  // GÖREV ALANI: State'leri ve Fonksiyonları Buraya Yaz
-  // ----------------------------------------------------
-
-  // İPUCU 1: Username, Email ve Password için 3 tane useState lazım.
-  // İPUCU 2: handleSubmit fonksiyonu içinde fetch ile POST isteği atacaksın.
-  // İPUCU 3: API Adresi: http://localhost:5055/api/auth/register
-  // İPUCU 4: Başarılı olursa (response.ok), kullanıcıyı Login sayfasına yönlendir (navigate).
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +23,7 @@ function RegisterPage() {
       const data = await response.json();
       if (response.ok) {
         alert("Kayıt Başarılı! Giriş sayfasına yönlendiriliyorsunuz...");
-        navigate("/login"); // Ana sayfaya fırlat
+        navigate("/login");
       } else {
         console.log("Hata:", data);
         alert("Giriş Başarısız: " + data.message);

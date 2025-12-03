@@ -29,10 +29,10 @@ function TransactionForm({ categories, onSuccess }) {
     })
       .then(res => {
         if (res.status === 401) {
-           // (Burayı sonra konuşuruz, şimdilik veriyi çekmeye odaklanalım)
+           // (Burası sonra eğer token olmaz ise girecek kod)
         }
         if (res.ok) {
-          alert("İşlem Başarıyla Eklendi! 💸"); // Türkçe Mesaj
+          alert("İşlem Başarıyla Eklendi! 💸");
           setFormData({ ...formData, amount: "", description: "" });
           onSuccess();
         } else {
