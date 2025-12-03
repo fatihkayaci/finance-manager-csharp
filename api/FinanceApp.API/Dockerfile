@@ -1,7 +1,6 @@
-# Sadece SDK imajını kullanıyoruz (İçinde dotnet watch gibi aletler var)
-FROM mcr.microsoft.com/dotnet/sdk:9.0
-
-WORKDIR /app
+# 1. AŞAMA: İNŞAAT (Build)
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
 
 # Proje dosyalarını kopyala
 COPY ["FinanceApp.API/FinanceApp.API.csproj", "FinanceApp.API/"]
@@ -12,15 +11,21 @@ COPY ["FinanceApp.Service/FinanceApp.Service.csproj", "FinanceApp.Service/"]
 # Paketleri indir
 RUN dotnet restore "FinanceApp.API/FinanceApp.API.csproj"
 
-# Geri kalan her şeyi kopyala (Volume olsa bile ilk kurulum için bu iyidir)
+# Geri kalan her şeyi kopyala
 COPY . .
+WORKDIR "/src/FinanceApp.API"
 
-# Çalışma klasörünü API projesinin içi yap
-WORKDIR /app/FinanceApp.API
+# Derle ve Yayınla (Release Modu - En hafifi)
+RUN dotnet publish "FinanceApp.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# HOT RELOAD KOMUTU:
-# "watch": Dosyaları izle.
-# "run": Çalıştır.
-# "--non-interactive": Soru sorup durma.
-# "--urls": Dışarıya bu porttan yayın yap.
-CMD ["dotnet", "watch", "run", "--non-interactive", "--urls", "http://0.0.0.0:8080"]
+# 2. AŞAMA: ÇALIŞTIRMA (Runtime)
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Render'ın verdiği portu dinlemesi için (Genelde 8080)
+EXPOSE 8080
+ENV ASPNETCORE_HTTP_PORTS=8080
+
+# ARTIK "WATCH" YOK, DİREKT DLL ÇALIŞTIRILIYOR
+ENTRYPOINT ["dotnet", "FinanceApp.API.dll"]
