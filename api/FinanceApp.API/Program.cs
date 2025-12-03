@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 // --- 1. CORS AYARI (NÜKLEER MOD) ---
 builder.Services.AddCors(options =>
 {
-    // İsim vermiyoruz, varsayılan politika yapıyoruz.
     options.AddDefaultPolicy(policy =>
     {
         policy.AllowAnyOrigin()  // KİM OLURSAN OL GEL (localhost, ip, vs.)

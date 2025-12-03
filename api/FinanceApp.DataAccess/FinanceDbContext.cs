@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinanceApp.DataAccess
 {
-    // DbContext sınıfından miras alarak bu class'a "Sen bir Veritabanı Yöneticisisin" diyoruz.
     public class FinanceDbContext : DbContext
     {
-        // 1. YAPICI METOT (Constructor)
         // Dışarıdan (API katmanından) veritabanı ayarlarını (Connection String) alabilmek için bu kapıyı açıyoruz.
         // options: "Hangi veritabanına bağlanacağım?", "Şifrem ne?" gibi bilgileri taşır.
         public FinanceDbContext(DbContextOptions<FinanceDbContext> options) : base(options)

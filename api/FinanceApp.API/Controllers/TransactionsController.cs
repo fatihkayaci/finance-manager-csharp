@@ -12,7 +12,6 @@ namespace FinanceApp.API.Controllers
     {
         private readonly ITransactionService _transactionService;
 
-        // Constructor'da ITransactionService istiyoruz (Program.cs verecek)
         public TransactionsController(ITransactionService transactionService)
         {
             _transactionService = transactionService;
@@ -28,7 +27,6 @@ namespace FinanceApp.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateTransactionDto transaction)
         {
-            // Basit bir validasyon (İleride FluentValidation ile yapacağız)
             if (transaction.Amount == 0)
                 return BadRequest("Tutar 0 olamaz!");
 
