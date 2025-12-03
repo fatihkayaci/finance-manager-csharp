@@ -13,17 +13,16 @@ services:
   finance_api:
     build:
       context: ./api
-      dockerfile: FinanceApp.API/Dockerfile
+      dockerfile: FinanceApp.API/Dockerfile.dev
     ports:
       - "5055:8080"
     depends_on:
-      db_server:
-        condition: service_healthy  # EKLENDİ: Veritabanı "sağlıklıyım" demeden başlama!
+      - db_server
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
     volumes:
-      - ./api:/app  # Canlı yayın tüneli (Hot Reload için şart)
+      - ./api:/app
 
   db_server:
     image: postgres:15-alpine

@@ -1,0 +1,24 @@
+# --- Dockerfile.dev (Sadece Local Geliştirme İçin) ---
+
+# SDK imajını kullanıyoruz (İçinde her şey var)
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /app
+
+# Projeleri Kopyala
+COPY ["FinanceApp.API/FinanceApp.API.csproj", "FinanceApp.API/"]
+COPY ["FinanceApp.Core/FinanceApp.Core.csproj", "FinanceApp.Core/"]
+COPY ["FinanceApp.DataAccess/FinanceApp.DataAccess.csproj", "FinanceApp.DataAccess/"]
+COPY ["FinanceApp.Service/FinanceApp.Service.csproj", "FinanceApp.Service/"]
+
+# Restore
+RUN dotnet restore "FinanceApp.API/FinanceApp.API.csproj"
+
+# Kodları Kopyala
+COPY . .
+
+# Çalışma dizini
+WORKDIR /app/FinanceApp.API
+
+# Hot Reload Komutu
+CMD ["dotnet", "watch", "run", "--non-interactive", "--urls", "http://0.0.0.0:8080"]

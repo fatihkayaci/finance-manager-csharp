@@ -1,5 +1,4 @@
-using FinanceApp.Core;
-using FinanceApp.Service.Interfaces; // Interface nerede?
+using FinanceApp.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using FinanceApp.Service.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +40,20 @@ namespace FinanceApp.API.Controllers
             {
                 await _transactionService.DeleteTransactionAsync(id);
                 return Ok(new { message = "Silindi" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, UpdateTransactionDto transaction)
+        {
+            try
+            {
+                await _transactionService.UpdateTransactionAsync(id, transaction);
+                return Ok(new { message = "İşlem başarıyla güncellendi." });
             }
             catch (Exception ex)
             {

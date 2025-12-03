@@ -94,6 +94,32 @@ namespace FinanceApp.Service.Services
                 throw new Exception("İşlem bulunamadı veya silme yetkiniz yok.");
             }
         }
+        public async Task UpdateTransactionAsync(int id, UpdateTransactionDto transactionDto)
+        {
+            var currentUserId = GetCurrentUserId(); // Kim değiştiriyor?
+
+            // 1. İşlemi bul (Hem ID tutacak HEM DE Sahibi tutacak!)
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t => t.Id == id && t.UserId == currentUserId);
+
+            if (transaction == null)
+            {
+                throw new Exception("İşlem bulunamadı veya bu işlemi düzenleme yetkiniz yok.");
+            }
+
+            // 2. Verileri Güncelle
+            transaction.Amount = transactionDto.Amount;
+            transaction.Description = transactionDto.Description;
+            transaction.TransactionDate = transactionDto.TransactionDate;
+            transaction.CategoryId = transactionDto.CategoryId;
+            
+            // "UpdatedDate" alanını da güncelleyelim (BaseEntity'de vardı)
+            transaction.UpdatedDate = DateTime.UtcNow;
+
+            // 3. Kaydet
+            _context.Transactions.Update(transaction);
+            await _context.SaveChangesAsync();
+        }
     }
     
 }
