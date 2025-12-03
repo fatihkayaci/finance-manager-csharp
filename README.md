@@ -5,6 +5,10 @@
 ![Released](https://img.shields.io/badge/Status-v0.1_MVP_Released-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
+## 🔗 Live Demo
+Check out the live application here: **[Finance Manager Live](https://finance-manager-csharp.vercel.app/)**
+
+
 ## 🚀 Features
 
 - **Transaction Management:** Track income and expenses easily.
