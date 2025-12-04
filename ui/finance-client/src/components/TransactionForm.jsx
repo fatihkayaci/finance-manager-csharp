@@ -1,6 +1,7 @@
-import { useState } from "react";
-const apiUrl = import.meta.env.VITE_API_URL;
-function TransactionForm({ categories, onSuccess }) {
+import { useState, useEffect } from "react";
+
+function TransactionForm({ categories, onSuccess, editingTransaction, setEditingTransaction }) {
+  
   const [formData, setFormData] = useState({
     amount: "",
     description: "",
@@ -8,8 +9,29 @@ function TransactionForm({ categories, onSuccess }) {
     transactionDate: new Date().toISOString().split('T')[0]
   });
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (editingTransaction) {
+      setFormData({
+        amount: editingTransaction.amount,
+        description: editingTransaction.description || "",
+        categoryId: editingTransaction.categoryId,
+        transactionDate: editingTransaction.transactionDate.split('T')[0]
+      });
+    } else {
+        setFormData({
+            amount: "",
+            description: "",
+            categoryId: "",
+            transactionDate: new Date().toISOString().split('T')[0]
+        });
+    }
+  }, [editingTransaction]); 
+  // ---------------------------------------------------------
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
+    const apiUrl = import.meta.env.VITE_API_URL;
 
     const payload = {
       amount: Number(formData.amount),
@@ -18,32 +40,65 @@ function TransactionForm({ categories, onSuccess }) {
       transactionDate: formData.transactionDate
     };
 
-    const token = localStorage.getItem("token");
-    fetch(`${apiUrl}/api/transactions`, {
-      method: "POST",
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(res => {
-        if (res.status === 401) {
-           // (Burası sonra eğer token olmaz ise girecek kod)
-        }
-        if (res.ok) {
-          alert("İşlem Başarıyla Eklendi! 💸");
-          setFormData({ ...formData, amount: "", description: "" });
-          onSuccess();
-        } else {
-          alert("Bir hata oluştu!");
-        }
-      });
+    try {
+      let response;
+      
+      if (editingTransaction) {
+        response = await fetch(`${apiUrl}/api/transactions/${editingTransaction.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        response = await fetch(`${apiUrl}/api/transactions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+      }
+
+      if (response.ok) {
+        alert(editingTransaction ? "Güncellendi! ✅" : "Eklendi! 💸");
+        
+        // Temizlik
+        setFormData({
+            amount: "",
+            description: "",
+            categoryId: "",
+            transactionDate: new Date().toISOString().split('T')[0]
+        });
+        setEditingTransaction(null); // Düzenleme modundan çık
+        onSuccess(); // Listeyi yenile
+      } else {
+        alert("Hata oluştu!");
+      }
+    } catch (error) {
+      console.error("Hata:", error);
+    }
   };
 
+  // İPTAL BUTONU (Vazgeçmek isterse)
+  const handleCancel = () => {
+      setEditingTransaction(null);
+      setFormData({
+        amount: "",
+        description: "",
+        categoryId: "",
+        transactionDate: new Date().toISOString().split('T')[0]
+    });
+  }
+
   return (
-    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-      <h3 className="text-lg font-medium text-blue-800 mb-3">Yeni İşlem Ekle</h3>
+    <div className={`p-4 rounded-lg border ${editingTransaction ? "bg-yellow-50 border-yellow-200" : "bg-blue-50 border-blue-100"}`}>
+      <h3 className={`text-lg font-medium mb-3 ${editingTransaction ? "text-yellow-800" : "text-blue-800"}`}>
+        {editingTransaction ? "İşlemi Düzenle ✏️" : "Yeni İşlem Ekle ➕"}
+      </h3>
       
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         
@@ -83,12 +138,25 @@ function TransactionForm({ categories, onSuccess }) {
           onChange={(e) => setFormData({...formData, transactionDate: e.target.value})}
         />
 
-        <button 
-          type="submit"
-          className="md:col-span-2 bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700 transition-colors"
-        >
-          ➕ Ekle
-        </button>
+        <div className="md:col-span-2 flex gap-2">
+            <button 
+            type="submit"
+            className={`flex-1 text-white font-bold py-2 rounded transition-colors ${editingTransaction ? "bg-yellow-600 hover:bg-yellow-700" : "bg-blue-600 hover:bg-blue-700"}`}
+            >
+            {editingTransaction ? "Güncelle" : "Ekle"}
+            </button>
+
+            {editingTransaction && (
+                <button 
+                    type="button"
+                    onClick={handleCancel}
+                    className="bg-gray-400 text-white font-bold py-2 px-4 rounded hover:bg-gray-500 transition-colors"
+                >
+                    İptal
+                </button>
+            )}
+        </div>
+        
       </form>
     </div>
   );
