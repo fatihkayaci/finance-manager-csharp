@@ -1,10 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from 'react'
+import { useState, useContext } from 'react' // 1. useContext'i ekledik
+import { TransactionContext } from '../context/TransactionContext' // 2. Context'i import ettik
+
 const apiUrl = import.meta.env.VITE_API_URL;
+
 function LoginPage() {
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  
+  // 3. Context'ten dispatch (garson) yetkisini alıyoruz
+  const { dispatch } = useContext(TransactionContext);
   
   const navigate = useNavigate();
 
@@ -26,11 +32,16 @@ function LoginPage() {
         const data = await response.json();
 
         if (response.ok) {
-            console.log("Giriş Başarılı! Token:", data.token);
+            console.log("Giriş Başarılı! Token:", data);
             
             // Token (LocalStorage)
             localStorage.setItem("token", data.token);
-            
+            localStorage.setItem("userName", data.username);
+            dispatch({ 
+                type: 'LOGIN', 
+                payload: data.user || { email: email }
+            });
+
             alert("Hoşgeldiniz!");
             navigate("/");
         } else {

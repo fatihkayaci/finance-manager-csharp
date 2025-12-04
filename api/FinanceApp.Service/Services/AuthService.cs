@@ -49,61 +49,53 @@ namespace FinanceApp.Service.Services
         }
 
         // --- GİRİŞ YAPMA ---
-        public async Task<string> LoginAsync(LoginDto request)
+        public async Task<LoginResponseDto> LoginAsync(LoginDto request)
         {
-            // 1. Kullanıcıyı bul
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (user == null)
             {
                 throw new Exception("Kullanıcı bulunamadı.");
             }
 
-            // 2. Şifreyi Kontrol Et (Verify)
-            // Gelen şifreyi (1234) al, Hashle ve veritabanındaki Hash ile kıyasla.
+            // 2. Şifreyi Kontrol Et
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
                 throw new Exception("Şifre yanlış!");
             }
 
-            // 3. Token Üret (Burayı bir sonraki adımda dolduracağız)
-            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            {
-                throw new Exception("Şifre yanlış!");
-            }
-
-            // --- 3. TOKEN ÜRETME (YENİ KISIM) ---
-            
-            // A) Token'ın içine gömeceğimiz bilgiler (Claims)
-            // Bu bilgiler bilekliğin üzerinde yazan yazılardır.
+            // 3. Token Üretme İşlemleri (Aynen kalıyor)
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Kullanıcı ID'si
-                new Claim(ClaimTypes.Name, user.Username),                // Kullanıcı Adı
-                new Claim(ClaimTypes.Email, user.Email)                   // E-posta
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
-            // B) Gizli Anahtarı Getir
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("JwtSettings:SecretKey").Value!));
-
-            // C) İmzalama Şekli (Mühürleme)
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings:SecretKey").Value!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            // D) Token'ı Oluştur
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1), // Token 1 gün geçerli olsun
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = creds,
                 Issuer = _configuration.GetSection("JwtSettings:Issuer").Value,
                 Audience = _configuration.GetSection("JwtSettings:Audience").Value
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenObj = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(tokenObj);
 
-            // E) Token'ı string olarak döndür (eyJhbGciOiJIUz...)
-            return tokenHandler.WriteToken(token);
+            // --- BURASI DEĞİŞTİ ---
+            // Sadece string token yerine, dolu bir obje dönüyoruz:
+            return new LoginResponseDto
+            {
+                Token = tokenString,
+                UserId = user.Id,
+                Username = user.Username,
+                Email = user.Email
+            };
         }
     }
 }

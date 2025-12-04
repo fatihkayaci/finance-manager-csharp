@@ -34,8 +34,9 @@ namespace FinanceApp.API.Controllers
         {
             try
             {
-                var token = await _authService.LoginAsync(request);
-                return Ok(new { token = token });
+                var response = await _authService.LoginAsync(request);
+                
+                return Ok(response); 
             }
             catch (Exception ex)
             {

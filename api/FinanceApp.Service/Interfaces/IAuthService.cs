@@ -9,6 +9,6 @@ namespace FinanceApp.Service.Interfaces
         Task<User> RegisterAsync(RegisterDto request);
 
         // Giriş Yap: Başarılıysa "Token" (string) döner.
-        Task<string> LoginAsync(LoginDto request);
+        Task<LoginResponseDto> LoginAsync(LoginDto request);
     }
 }
