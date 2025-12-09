@@ -2,21 +2,23 @@
 
 > A modern, full-stack personal finance management application built with **.NET 9**, **React**, and **Docker**. Designed with **Clean Architecture** principles.
 
-![Released](https://img.shields.io/badge/Status-v0.1_MVP_Released-green)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![Status](https://img.shields.io/badge/Status-v0.2_Alpha-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Net](https://img.shields.io/badge/.NET-9.0-purple)
+![React](https://img.shields.io/badge/React-18-cyan)
 
 ## 🔗 Live Demo
-Check out the live application here: **[Finance Manager Live](https://finance-manager-csharp.vercel.app/)**
 
+Check out the live application here: **[Finance Manager Live](https://finance-manager-csharp.vercel.app/)**
 
 ## 🚀 Features
 
 - **Transaction Management:** Track income and expenses easily.
-- **Categorization:** Organize transactions with custom categories.
+- **Dynamic Categorization:** Create categories with specific types (**Income** or **Expense**) and custom colors.
 - **Reporting:** (Coming Soon) Visual dashboard for monthly/yearly insights.
 - **Containerized:** Fully dockerized environment for easy setup.
 - **Secure Authentication:** JWT (JSON Web Token) based login & registration system.
-  
+
 ## 🏗️ Architecture & Tech Stack
 
 This project follows the **N-Layer Architecture (Clean Architecture)** to ensure scalability and maintainability.
@@ -26,18 +28,18 @@ This project follows the **N-Layer Architecture (Clean Architecture)** to ensure
 - **Framework:** .NET 9 (Core)
 - **Database:** PostgreSQL 15
 - **ORM:** Entity Framework Core 9 (Code-First)
-- **Validation:** FluentValidation (Planned)
+- **Validation:** Data Annotations & DTO Validation
 - **Documentation:** Swagger / OpenAPI
 - **Pattern:** Repository Pattern & DTOs
 - **Security:** BCrypt (Password Hashing) & JWT Bearer Authentication
-  
+
 ### Frontend (UI)
 
-*[In Progress]*
-
-- **Library:** React.js
-- **State Management:** (Planned)
-- **Styling:** (Planned)
+- **Library:** React.js (Vite)
+- **Styling:** Tailwind CSS
+- **Routing:** React Router DOM
+- **HTTP Client:** Fetch API / Axios
+- **State Management:** React Hooks
 
 ### DevOps
 
@@ -63,9 +65,11 @@ docker-compose up --build
 
 ### 3. Access the Application
 
-- **API (Swagger):** http://localhost:5055/swagger
-- **PgAdmin:** http://localhost:5050
-- **Frontend:** (Coming Soon)
+| Service   | URL                                |
+|-----------|------------------------------------|
+| API (Swagger) | http://localhost:5055/swagger  |
+| PgAdmin   | http://localhost:5050              |
+| Frontend  | http://localhost:5173              |
 
 ## 📂 Project Structure
 ```
@@ -76,7 +80,7 @@ finance-manager-csharp/
 │   ├── FinanceApp.DataAccess/   # EF Core & Database Context
 │   └── FinanceApp.Service/      # Business Logic & DTOs
 ├── database/                    # Database scripts (if needed)
-├── ui/                          # React Application (Coming Soon)
+├── ui/                          # React Application
 └── docker-compose.yml           # Orchestration
 ```
 
@@ -86,4 +90,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Developed by Fatih KAYACI**
+Developed by **Fatih KAYACI**
