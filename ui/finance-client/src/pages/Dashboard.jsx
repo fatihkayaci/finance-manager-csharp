@@ -1,6 +1,5 @@
 import SummaryChart from '../components/SummaryChart';
 import DashboardStats from "../components/DashboardState";
-
 export default function Dashboard({ transactionsData = [] }) {
   
   return (

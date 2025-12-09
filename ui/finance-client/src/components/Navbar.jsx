@@ -50,7 +50,13 @@ export default function Navbar({ userName }) {
               <span className="text-xs text-gray-500">Kullanıcı</span>
             </div>
 
-            {/* ✨ YENİ EKLENEN BUTON: İşlemler'e Git ✨ */}
+            <button 
+              onClick={() => navigate("/categoryAdd")}
+              className="bg-indigo-50 text-indigo-600 px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-100 transition whitespace-nowrap"
+            >
+              Kategori Ekle +
+            </button>
+            
             <button 
               onClick={() => navigate("/transactionAdd")}
               className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-100 transition"

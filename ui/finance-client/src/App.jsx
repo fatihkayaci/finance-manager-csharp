@@ -8,6 +8,7 @@ import TransactionAdd from "./pages/TransactionAdd";
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from "./components/MainLayout"; // Yeni oluşturduğumuz dosya
 import TransactionList from "./pages/TransactionList";
+import AddCategory from './pages/AddCategory';
 const apiUrl = import.meta.env.VITE_API_URL; // API URL'i buraya al
 
 function App() {
@@ -96,7 +97,18 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/categoryAdd" 
+          element={
+            <ProtectedRoute>
+              <MainLayout>
+                <AddCategory />
+              </MainLayout>
+            </ProtectedRoute>
+          } 
+        />
       </Routes>
+      
     </BrowserRouter>
   );
 }
